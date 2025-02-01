@@ -1,0 +1,18 @@
+Process i (u, send, status)
+{
+        u = UID;
+        send = (u,0);
+        status = unknown;
+        DO
+        {
+            i -> (i+1)mod n: send; # send right
+            ACCEPT: v = send; 
+            case v.uid > u: send = v; v.uid < u: do nothing just relay (send = null); v.uid = u; status = leader
+            end case
+            i -> (i-1)mod n: send;
+            ACCEPT: w = send; # send left
+            case w.uid > u: send = w; w.uid < u: do nothing just relay (send = null); w.uid = u; status = leader
+            end case
+            send = (u, v.dist + 1);
+        }
+}
